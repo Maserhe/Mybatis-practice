@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.TeacherMapper">
+
+    <!--查询老师-->
+    <select id="getTeacher" resultMap="TeacherStudent" resultType="teacher">
+        select * from mybatis.teacher where id = #{id};
+    </select>
+
+    <!--查询学生-->
+    <select id="getStudent" resultType="student">
+        select * from mybatis.student where tid = #{id};
+    </select>
+    <!--结果集映射-->
+    <resultMap id="TeacherStudent" type="teacher">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <collection property="students" javaType="ArrayList" ofType="student" select="getStudent" column="id"/>
+    </resultMap>
+
+
+    <!--按照结果查询-->
+    <select id="getTeacher1" resultMap="TeacherStudent1">
+        select s.id sid, s.name sname, t.name tname, t.id tid
+        from mybatis.teacher t, mybatis.student s
+        where s.tid = t.id and t.id = #{tid};
+    </select>
+
+    <!--结果映射集-->
+    <resultMap id="TeacherStudent1" type="teacher">
+        <result property="id" column="tid"/>
+        <result property="name" column="tname"/>
+
+        <collection property="students" ofType="student">
+            <result property="id" column="sid"/>
+            <result property="name" column="sname"/>
+        </collection>
+
+    </resultMap>
+</mapper>
